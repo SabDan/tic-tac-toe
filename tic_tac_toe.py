@@ -44,7 +44,8 @@ def main():
         # Toggle Active Player
         active_player_index = (active_player_index + 1) % len(players)
 
-    print(f"Game over! {player} has won with the board: ")
+    print()
+    print(f"GAME OVER! {player} has won with the board: ")
     show_board(board)
 
 
@@ -91,11 +92,11 @@ def announce_turn(player):
 
 
 def find_winner(board):
-    # win by rows
-    rows = board
-    for row in rows:
-        symbol1 = row[0]
-        if symbol1 and all(symbol1 == cell for cell in row):
+    sequences = get_winning_sequence(board)
+
+    for cells in sequences:
+        symbol1 = cells[0]
+        if symbol1 and all(symbol1 == cell for cell in cells):
             return True
         # if not symbol1:
         #     continue
@@ -105,33 +106,31 @@ def find_winner(board):
         #
         # return True
 
+    return False
+
+
+def get_winning_sequence(board):
+    sequences = []
+    # win by rows
+    rows = board
+    sequences.extend(rows)
     # win by columns
-    columns = []
     for col_idx in range(0, 3):
         col = [
             board[0][col_idx],
             board[1][col_idx],
             board[2][col_idx],
         ]
-        columns.append(col)
+        sequences.append(col)
 
-    for col in columns:
-        symbol1 = col[0]
-        if symbol1 and all(symbol1 == cell for cell in col):
-            return True
-
-    # win by diagonals
+        # win by diagonals
         diagonals = [
             [board[0][0], board[1][1], board[2][2]],
             [board[0][2], board[1][1], board[2][0]],
         ]
+        sequences.extend(diagonals)
 
-        for diag in diagonals:
-            symbol1 = diag[0]
-            if symbol1 and all(symbol1 == cell for cell in diag):
-                return True
-
-        return False
+    return sequences
 
 
 """board = {
